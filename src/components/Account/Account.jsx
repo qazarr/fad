@@ -16,7 +16,9 @@ class Account extends Component {
     super(props);
     this.state = {
       selectedTab: 1,
-      transactions: props.accountData.transactions
+      transactions: props.accountData.transactions,
+      order: props.order,
+      orderBy: props.orderBy
     }
   }
   
@@ -44,7 +46,11 @@ class Account extends Component {
                 tabContent: (
                     <Table tableHeaderColor="primary"
                            tableHead={["ID", "Name", "Time", "Amount"]}
-                           tableData={this.getAccountData(this.state.transactions)}></Table>
+                           tableData={this.getAccountData(this.state.transactions)}
+                           changeSorting={this.sortHistory}
+                           order={this.state.order}
+                           orderBy={this.state.orderBy}
+                    ></Table>
                 )
               },
               {
@@ -88,6 +94,25 @@ class Account extends Component {
   handleChangeTab = (tabNo) => {
     this.setState({selectedTab: tabNo});
   }
+  
+  sortHistory = (key) => {
+    console.log(key);
+    let order = this.state.order;
+    if (key === this.state.orderBy) {
+      order = order === 'asc' ? 'desc' : 'asc';
+    }
+    this.state.transactions.sort((a, b) => {
+      switch (typeof a[key]) {
+        case 'string':
+          return a[key].localeCompare(b[key]) * (order === "asc" ? 1 : -1);
+        default:
+          return (a[key] - b[key]) * (order === "asc" ? 1 : -1);
+      }
+      
+    });
+    this.setState({transactions: this.state.transactions, order, orderBy: key});
+  }
+ 
 }
 
 Account.defaultProps = {
@@ -100,6 +125,8 @@ Account.defaultProps = {
   }
 };
 Account.propTypes = {
-  accountData: PropTypes.object
+  accountData: PropTypes.object,
+  order: PropTypes.oneOf(['asc', 'desc']),
+  orderBy: PropTypes.string
 };
 export default Account;

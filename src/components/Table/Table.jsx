@@ -7,11 +7,17 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
+import TableSortLabel from "@material-ui/core/TableSortLabel";
+import Tooltip from "@material-ui/core/Tooltip";
 // core components
 import tableStyle from "assets/jss/material-dashboard-react/components/tableStyle.jsx";
 
 function CustomTable({ ...props }) {
-  const { classes, tableHead, tableData, tableHeaderColor } = props;
+  const { classes, tableHead, tableData, tableHeaderColor, order, orderBy, changeSorting} = props;
+  const sortHandler = (key) => {
+    changeSorting(key.toLowerCase());
+  };
+  console.log(orderBy);
   return (
     <div className={classes.tableResponsive}>
       <Table className={classes.table}>
@@ -23,8 +29,21 @@ function CustomTable({ ...props }) {
                   <TableCell
                     className={classes.tableCell + " " + classes.tableHeadCell}
                     key={key}
+                    sortDirection={orderBy === prop.toLowerCase() ? order : false}
                   >
-                    {prop}
+                    <Tooltip
+                        title={"Sort " + prop}
+                        placement='bottom-start'
+                        enterDelay={300}
+                    >
+                      <TableSortLabel
+                          active={orderBy === prop.toLowerCase()}
+                          direction={order}
+                          onClick={() => sortHandler(prop)}
+                      >
+                        {prop}
+                      </TableSortLabel>
+                    </Tooltip>
                   </TableCell>
                 );
               })}
@@ -52,7 +71,9 @@ function CustomTable({ ...props }) {
 }
 
 CustomTable.defaultProps = {
-  tableHeaderColor: "gray"
+  tableHeaderColor: "gray",
+  order: "asc",
+  orderBy: "id"
 };
 
 CustomTable.propTypes = {
@@ -73,7 +94,9 @@ CustomTable.propTypes = {
         PropTypes.number,
         PropTypes.object
       ])
-  ))
+  )),
+  order: PropTypes.oneOf(['asc', 'desc']),
+  orderBy: PropTypes.string
 };
 
 export default withStyles(tableStyle)(CustomTable);
