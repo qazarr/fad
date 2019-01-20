@@ -3,12 +3,6 @@ import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
-import {bugs, website, server} from "variables/general.jsx";
-import {
-  dailySalesChart,
-  emailsSubscriptionChart,
-  completedTasksChart
-} from "variables/charts.jsx";
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.jsx";
 import Account from "../../components/Account/Account.jsx";
 import Button from "../../components/CustomButtons/Button";
@@ -33,7 +27,6 @@ class Dashboard extends React.Component {
   };
   
   render() {
-    const {classes} = this.props;
     const {accounts} = this.state;
     return (
         <div>
@@ -48,7 +41,6 @@ class Dashboard extends React.Component {
   }
   
   renderAccounts(accounts) {
-    console.log(accounts);
     return accounts.map((account) => (
       <GridItem xs={12} sm={12} md={6} key={account.id}>
         <Account accountData={account} accounts={accounts} createTransaction={this.createTransaction}/>
@@ -56,7 +48,6 @@ class Dashboard extends React.Component {
     ));
   }
   createTransaction = (transaction, idFrom, idTo) => {
-    console.log('new transaction', transaction);
     const date = new Date().toISOString();
     const aFrom = this.state.accounts.find((account) => account.id === idFrom);
     transaction.date = date;

@@ -12,8 +12,6 @@ import {
   grayColor
 } from "assets/jss/material-dashboard-react.jsx";
 
-import { fade } from '@material-ui/core/styles/colorManipulator';
-
 const sidebarStyle = theme => ({
   drawerPaper: {
     border: "none",

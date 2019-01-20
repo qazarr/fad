@@ -17,7 +17,6 @@ function CustomTable({ ...props }) {
   const sortHandler = (key) => {
     changeSorting(key.toLowerCase());
   };
-  console.log(orderBy);
   return (
     <div className={classes.tableResponsive}>
       <Table className={classes.table}>

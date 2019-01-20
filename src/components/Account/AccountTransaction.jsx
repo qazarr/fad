@@ -22,7 +22,7 @@ class AccountTransaction extends Component {
   inputMap = new Map();
   
   render(){
-    const {createTransaction, cancelTransaction} = this.props;
+    const {cancelTransaction} = this.props;
     return (
         <form className="AccountTransaction">
           <GridContainer>
@@ -106,7 +106,6 @@ class AccountTransaction extends Component {
   };
   
   selectionChange = el => {
-    console.log(el.target.value);
     this.setState({selectedAccountId: el.target.value});
   };
   

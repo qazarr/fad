@@ -23,7 +23,6 @@ class Account extends Component {
   }
   
   render() {
-    const {accountData} = this.props;
     return (
         <CustomTabs
             title={this.props.accountData.name}
@@ -86,13 +85,6 @@ class Account extends Component {
   };
   
   createTransaction = (transaction, idFrom, idTo) => {
-    // transaction.date = new Date().toISOString();
-    // transaction.id = this.state.transactions.length > 0 ? this.state.transactions[this.state.transactions.length - 1].id + 1 : 1;
-    // const updatetedTransactions = this.state.transactions;
-    // updatetedTransactions.push(transaction);
-    // this.setState({
-    //   transactions: updatetedTransactions
-    // });
     this.handleChangeTab(1);
     this.props.createTransaction(transaction, idFrom, idTo);
   };
@@ -102,7 +94,6 @@ class Account extends Component {
   }
   
   sortHistory = (key) => {
-    console.log(key);
     let order = this.state.order;
     if (key === this.state.orderBy) {
       order = order === 'asc' ? 'desc' : 'asc';
