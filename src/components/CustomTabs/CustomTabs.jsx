@@ -16,14 +16,10 @@ import CardHeader from "components/Card/CardHeader.jsx";
 import customTabsStyle from "assets/jss/material-dashboard-react/components/customTabsStyle.jsx";
 
 class CustomTabs extends React.Component {
-  state = {
-    value: 0
-  };
-
-  handleChange = (event, value) => {
-    this.setState({ value });
-  };
-
+  constructor(props) {
+    super(props);
+  }
+  
   render() {
     const {
       classes,
@@ -44,8 +40,8 @@ class CustomTabs extends React.Component {
             <div className={cardTitle}>{title}</div>
           ) : null}
           <Tabs
-            value={this.state.value}
-            onChange={this.handleChange}
+            value={this.props.selectedTab}
+            onChange={(ev, value) => this.props.changeTab(value)}
             classes={{
               root: classes.tabsRoot,
               indicator: classes.displayNone,
@@ -80,7 +76,7 @@ class CustomTabs extends React.Component {
         </CardHeader>
         <CardBody>
           {tabs.map((prop, key) => {
-            if (key === this.state.value) {
+            if (key === this.props.selectedTab) {
               return <div key={key}>{prop.tabContent}</div>;
             }
             return null;
@@ -90,6 +86,10 @@ class CustomTabs extends React.Component {
     );
   }
 }
+
+CustomTabs.defaultProps = {
+  selectedTab: 0
+};
 
 CustomTabs.propTypes = {
   classes: PropTypes.object.isRequired,
@@ -109,7 +109,9 @@ CustomTabs.propTypes = {
     })
   ),
   rtlActive: PropTypes.bool,
-  plainTabs: PropTypes.bool
+  plainTabs: PropTypes.bool,
+  selectedTab: PropTypes.number,
+  changeTab: PropTypes.func
 };
 
 export default withStyles(customTabsStyle)(CustomTabs);
