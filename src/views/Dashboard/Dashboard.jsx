@@ -18,9 +18,13 @@ import Add from "@material-ui/icons/Add";
 let idIterator = 2;
 
 class Dashboard extends React.Component {
-  state = {
-    value: 0
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: 0,
+      accounts: props.accounts
+    };
+  }
   handleChange = (event, value) => {
     this.setState({value});
   };
@@ -29,13 +33,14 @@ class Dashboard extends React.Component {
   };
   
   render() {
-    const {classes, accounts} = this.props;
+    const {classes} = this.props;
+    const {accounts} = this.state;
     return (
         <div>
           <GridContainer>
             {this.renderAccounts(accounts)}
             <GridItem xs={6}>
-              <Button justIcon round color="primary" onClick={() => this.addAccount(accounts)}><Add/></Button>
+              <Button justIcon round color="primary" onClick={() => this.addAccount()}><Add/></Button>
             </GridItem>
           </GridContainer>
         </div>
@@ -43,15 +48,40 @@ class Dashboard extends React.Component {
   }
   
   renderAccounts(accounts) {
+    console.log(accounts);
     return accounts.map((account) => (
       <GridItem xs={12} sm={12} md={6} key={account.id}>
-        <Account accountData={account}/>
+        <Account accountData={account} accounts={accounts} createTransaction={this.createTransaction}/>
       </GridItem>
     ));
   }
+  createTransaction = (transaction, idFrom, idTo) => {
+    console.log('new transaction', transaction);
+    const date = new Date().toISOString();
+    const aFrom = this.state.accounts.find((account) => account.id === idFrom);
+    transaction.date = date;
+    transaction.id = aFrom.transactions.length > 0 ? aFrom.transactions[aFrom.transactions.length - 1].id + 1 : 1;
+    if (idFrom === idTo) {
+      const updatetedTransactions = aFrom.transactions;
+      updatetedTransactions.push(transaction);
+    } else {
+      const aTo = this.state.accounts.find((account) => account.id === idTo);
+      const transactionTo = {};
+      Object.assign(transactionTo, transaction);
+      transactionTo.id = aTo.transactions.length > 0 ? aTo.transactions[aTo.transactions.length - 1].id + 1 : 1;
+      transaction.amount = -transaction.amount;
+      aFrom.transactions.push(transaction);
+      aTo.transactions.push(transactionTo);
+    }
+    this.setState({
+      accounts: this.state.accounts
+    });
+  };
   
-  addAccount(accounts) {
-    this.setState({accounts: accounts.push({id: ++idIterator, name: 'Account ' + idIterator, transactions: []})});
+  addAccount() {
+    const accounts = this.state.accounts;
+    accounts.push({id: ++idIterator, name: 'Account ' + idIterator, transactions: []});
+    this.setState({accounts});
   }
 }
 

@@ -26,7 +26,7 @@ class Account extends Component {
     const {accountData} = this.props;
     return (
         <CustomTabs
-            title="Account"
+            title={this.props.accountData.name}
             headerColor="primary"
             selectedTab={this.state.selectedTab}
             changeTab={this.handleChangeTab}
@@ -36,7 +36,7 @@ class Account extends Component {
                 tabIcon: Home,
                 tabContent: (
                     <Typography variant="display1" component="h3" align="center">
-                      {currencyPipe(this.calculateTotalAmount(this.state.transactions))}
+                       {currencyPipe(this.calculateTotalAmount(this.state.transactions))}
                     </Typography>
                 )
               },
@@ -57,7 +57,12 @@ class Account extends Component {
                 tabName: "Transaction",
                 tabIcon: SwapHoriz,
                 tabContent: (
-                    <AccountTransaction cancelTransaction={this.cancelTransaction} createTransaction={this.createTransaction}/>
+                    <AccountTransaction
+                        accounts={this.props.accounts}
+                        account={this.props.accountData}
+                        cancelTransaction={this.cancelTransaction}
+                        createTransaction={this.createTransaction}
+                    />
                 )
               }
             ]}
@@ -80,15 +85,16 @@ class Account extends Component {
     this.handleChangeTab(0);
   };
   
-  createTransaction = (transaction) => {
-    transaction.date = new Date().toISOString();
-    transaction.id = this.state.transactions.length > 0 ? this.state.transactions[this.state.transactions.length - 1].id + 1 : 1;
-    const updatetedTransactions = this.state.transactions;
-    updatetedTransactions.push(transaction);
-    this.setState({
-      transactions: updatetedTransactions
-    });
+  createTransaction = (transaction, idFrom, idTo) => {
+    // transaction.date = new Date().toISOString();
+    // transaction.id = this.state.transactions.length > 0 ? this.state.transactions[this.state.transactions.length - 1].id + 1 : 1;
+    // const updatetedTransactions = this.state.transactions;
+    // updatetedTransactions.push(transaction);
+    // this.setState({
+    //   transactions: updatetedTransactions
+    // });
     this.handleChangeTab(1);
+    this.props.createTransaction(transaction, idFrom, idTo);
   };
   
   handleChangeTab = (tabNo) => {
@@ -127,6 +133,8 @@ Account.defaultProps = {
 Account.propTypes = {
   accountData: PropTypes.object,
   order: PropTypes.oneOf(['asc', 'desc']),
-  orderBy: PropTypes.string
+  orderBy: PropTypes.string,
+  accounts: PropTypes.arrayOf(PropTypes.object),
+  createTransaction: PropTypes.func
 };
 export default Account;

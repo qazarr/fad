@@ -4,27 +4,27 @@ import GridContainer from "../Grid/GridContainer";
 import GridItem from "../Grid/GridItem";
 import CustomInput from "../CustomInput/CustomInput";
 import Button from "../CustomButtons/Button";
-import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+
 
 class AccountTransaction extends Component {
   constructor(props){
     super(props);
     this.myRef = React.createRef();
+    this.state = {
+      selectedAccountId: this.props.account.id
+    }
   }
   
-  formRef = null;
-  titleInput;
   inputMap = new Map();
-  
-  setFormRef = (element, test) => {
-    this.formRef = element;
-    console.log();
-  };
   
   render(){
     const {createTransaction, cancelTransaction} = this.props;
     return (
-        <form ref={this.myRef} className="AccountTransaction">
+        <form className="AccountTransaction">
           <GridContainer>
             <GridItem xs={12}>
               <CustomInput
@@ -63,6 +63,21 @@ class AccountTransaction extends Component {
                   }}
               />
             </GridItem>
+            <GridItem xs={12}>
+              <FormControl fullWidth margin="normal">
+                <InputLabel htmlFor="account">Select accont for transaction</InputLabel>
+                <Select
+                    value={this.state.selectedAccountId}
+                    onChange={this.selectionChange}
+                    inputProps={{
+                      name: 'account',
+                      id: 'account'
+                    }}
+                >
+                  {this.renderMenuItems()}
+                </Select>
+              </FormControl>
+            </GridItem>
             <GridItem xs={6}>
               <Button variant="contained" fullWidth onClick={() => cancelTransaction()}>
                 Cancel
@@ -78,27 +93,36 @@ class AccountTransaction extends Component {
     )
   }
   
+  renderMenuItems() {
+    return (this.props.accounts.map((account) => {
+       return <MenuItem value={account.id} key={account.id}>{account.name}</MenuItem>
+    }));
+  }
+  
   setControl = (el) => {
     if (el && el.id) {
       this.inputMap.set(el.id, el);
     }
   };
   
+  selectionChange = el => {
+    console.log(el.target.value);
+    this.setState({selectedAccountId: el.target.value});
+  };
+  
   handleApply = () => {
-    const formCollection = this.myRef.current.elements;
-    console.log(this.myRef);
     const newTransaction = {};
-    console.log(this.inputMap.forEach((element, name) => {
-      console.log();
+    this.inputMap.forEach((element, name) => {
       newTransaction[name] = element.type === 'number' ? parseFloat(element.value) : element.value;
-    }));
-    console.log(newTransaction);
-    this.props.createTransaction(newTransaction);
+    });
+    this.props.createTransaction(newTransaction, this.props.account.id, this.state.selectedAccountId);
   }
 }
 AccountTransaction.propTypes = {
   createTransaction: PropTypes.func,
   cancelTransaction: PropTypes.func,
+  accounts: PropTypes.arrayOf(PropTypes.object),
+  account: PropTypes.object
 }
 
 export default AccountTransaction;
